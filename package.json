@@ -11,9 +11,10 @@
   },
   "scripts": {
     "setup:api": "cd api && yarn install",
-    "start:api": "yarn workspace api start:dev",
+    "start:api": "yarn workspace api dev",
+    "docker-start": "npm run start:api && npm run dev",
     "setup:frontend": "cd frontend && yarn install",
-    "start:frontend": "yarn workspace frontend start:dev"
+    "start:frontend": "yarn workspace frontend dev"
   },
   "author": "",
   "license": "ISC",

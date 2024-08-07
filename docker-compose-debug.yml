@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: DockerfileDebug
+    container_name: app
+    env_file:
+      - ./docker/api-debug.env
+    ports:
+      - "${PORT_LOCAL}:3000"
+    volumes:
+      - .:/app
+    environment:
+      NODE_ENV: development
