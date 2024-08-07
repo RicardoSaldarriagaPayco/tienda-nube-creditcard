@@ -22,12 +22,6 @@ yarn setup:frontend
 yarn start:api
 ```
 
-and
-
-```bash
-yarn start:db
-```
-
 ## Running the App
 
 
