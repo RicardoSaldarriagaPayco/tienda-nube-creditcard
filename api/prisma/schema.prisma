@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.sqlite"
+}
+
+model Session {
+  id           Int       @id @default(autoincrement())
+  token_type   String
+  scope        String
+  access_token String
+  shop         String
+  user_id      Int       @unique
+  credentials  TiendanubeTdcCredentials?
+
+  @@map("sessions")
+}
+
+model TiendanubeTdcCredentials {
+  user_id      Int       @unique
+  pCustId      String
+  publicKey    String
+  privateKey   String
+  pKey         String
+  Session      Session   @relation(fields: [user_id], references: [user_id])
+
+  @@map("tiendanube_tdc_credentials")
+}
