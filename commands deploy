@@ -1,0 +1,9 @@
+heroku login
+
+heroku container:login
+
+heroku create <my-app-name> -s container
+
+heroku config:set -a tienda-nube-creditcard \ TIENDANUBE_AUTENTICATION_URL=https://www.tiendanube.com/apps/authorize/
+token TIENDANUBE_API_URL=https://api.nuvemshop.com.br/v1 CLIENT_SECRET=a90006717f8d879363e1a997da3e94a28259d763a741af30 CLIENT_ID=7882 CLIENT_EMAIL=andrea.gomez@epayco.com APP_NAME
+=ePayco

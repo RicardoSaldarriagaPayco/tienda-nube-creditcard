@@ -5,7 +5,7 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copiar archivos de configuración y dependencias del frontend
-COPY frontend/package.json frontend/package-lock.json ./frontend/
+COPY frontend/package.json ./frontend/
 COPY frontend/tsconfig.json ./frontend/
 
 # Instalar dependencias del frontend
@@ -22,7 +22,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copiar archivos de configuración y dependencias del api
-COPY api/package.json api/package-lock.json ./api/
+COPY api/package.json ./api/
 COPY api/tsconfig.json ./api/
 
 # Instalar dependencias del backend
