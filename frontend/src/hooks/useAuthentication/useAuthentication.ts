@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@nimbus-ds/components";
 
-import { useAuth, useConfig, useFetch } from "@/hooks";
+import {useAuth, useConfig, useFetch } from "../";
 import { IAuth } from "../useAuth/useAuth.types";
 
 const useAuthentication = () => {

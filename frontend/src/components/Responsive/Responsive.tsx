@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import tokens from "@nimbus-ds/tokens/dist/js/tokens";
-import { useWindowWidth } from "@/hooks";
+import { useWindowWidth } from "../../hooks";
 
 import { IResponsive } from "./responsive.types";
 

@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, Card, useToast, Spinner } from "@nimbus-ds/components";
 import { FormField } from "@nimbus-ds/patterns";
 
-import { IConfig } from "@/hooks/useConfig";
-import { useAuth, useConfig, useFetch } from "@/hooks";
-import { IAuth } from "@/hooks/useAuth/useAuth.types"; 
+import { IConfig } from "../../../../hooks/useConfig";
+import { useAuth, useConfig, useFetch } from "../../../../hooks";
+import { IAuth } from "../../../../hooks/useAuth/useAuth.types";
 
 import { useTranslation, Trans } from "react-i18next";
 
-const apiURL = process.env.apiURL??"http://localhost:8000";
+const apiURL = process.env.apiURL??"http://localhost:3000";
 const initialConfig = {
   clientId: "7882",
   appName: "ePayco",
@@ -21,7 +21,7 @@ const Configuration: React.FC = () => {
   const query = new URLSearchParams(window.location.search);
   const code = query.get("code");
   const { request } = useFetch();
-  const { auth, setAuth } = useAuth();
+  const {  setAuth } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const { t } = useTranslation("translations");
@@ -119,6 +119,7 @@ const Configuration: React.FC = () => {
           gap="4"
         >
           <FormField.Input
+            crossOrigin={""}
             name="pCustId"
             label="P_CUST_ID_CLIENT"
             onChange={onChange}
@@ -126,6 +127,7 @@ const Configuration: React.FC = () => {
             required
           />
           <FormField.Input
+            crossOrigin={""}
             name="publicKey"
             label="PUBLIC_KEY"
             onChange={onChange}
@@ -133,6 +135,7 @@ const Configuration: React.FC = () => {
             required
           />
           <FormField.Input
+            crossOrigin={""}
             name="privateKey"
             label="PRIVATE_KEY"
             onChange={onChange}
@@ -140,6 +143,7 @@ const Configuration: React.FC = () => {
             required
           />
           <FormField.Input
+            crossOrigin={""}
             name="pKey"
             label="P_KEY"
             onChange={onChange}

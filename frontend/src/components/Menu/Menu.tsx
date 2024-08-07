@@ -5,7 +5,7 @@ import { Box, Thumbnail, Text } from "@nimbus-ds/components";
 import { CogIcon } from "@nimbus-ds/icons";
 import { Menu as MenuNimbus } from "@nimbus-ds/patterns";
 
-import { useConfig } from "@/hooks";
+import { useConfig } from "../../hooks";
 import { IPage } from "./menu.types";
 import { handleActive, isExample } from "./menu.definitions";
 

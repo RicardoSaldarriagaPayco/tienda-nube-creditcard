@@ -24,7 +24,7 @@ LoadCheckoutPaymentContext(function(Checkout, PaymentMethods) {
           };
 
           Checkout.http
-              .post("http://localhost:8000/payment", acmeRelevantData)
+              .post("http://localhost:3000/payment", acmeRelevantData)
               .then(function(responseBody) {
                   if (responseBody.data.success) {
                       callback({

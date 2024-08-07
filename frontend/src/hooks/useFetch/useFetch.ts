@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { axios } from "@/app";
+import { axios } from "../../app";
 import { IApiResponse } from "./useFetch.types";
 import { useConfig } from "..";
 

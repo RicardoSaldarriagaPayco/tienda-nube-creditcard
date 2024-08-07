@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Box, Title, Text } from "@nimbus-ds/components";
-import { Header, ListSteps } from "..";
+import { Header } from "..";
 import { useTranslation, Trans } from "react-i18next";
-import { Responsive } from "@/components";
+import { Responsive } from "../../../../components";
 
 const Layout: React.FC = () => {
   const { t } = useTranslation("translations");
@@ -47,9 +47,9 @@ const Layout: React.FC = () => {
                     <Text as="span" children="" />,
                     <Link
                       to={`https://registro.epayco.com/#985728`}
-                      as="a"
+           
                       target="blank"
-                      appearance="primary"
+                    
                       children=""
                       style={{color:"rgb(252, 88, 6)"}}
                     />
@@ -68,9 +68,9 @@ const Layout: React.FC = () => {
                     <Text as="span" children="" />,
                     <Link
                       to={`https://registro.epayco.com/#985728`}
-                      as="a"
+                     
                       target="blank"
-                      appearance="primary"
+               
                       children=""
                       style={{color:"rgb(252, 88, 6)"}}
                     />
@@ -143,9 +143,9 @@ const Layout: React.FC = () => {
                       <Text as="span" children="" />,
                       <Link
                         to={`https://registro.epayco.com/#985728`}
-                        as="a"
+               
                         target="blank"
-                        appearance="primary"
+                      
                         children=""
                         style={{color:"rgb(252, 88, 6)"}}
                       />
@@ -164,9 +164,9 @@ const Layout: React.FC = () => {
                       <Text as="span" children="" />,
                       <Link
                         to={`https://registro.epayco.com/#985728`}
-                        as="a"
+
                         target="blank"
-                        appearance="primary"
+
                         children=""
                         style={{color:"rgb(252, 88, 6)"}}
                       />
@@ -189,9 +189,6 @@ const Layout: React.FC = () => {
               <Box textAlign="center" justifyContent="center">
                 <Outlet  />
               </Box>
-              {/*<Box width="30%">
-                <ListSteps />
-              </Box>*/}
             </Box>
           </Box>
         </Box>

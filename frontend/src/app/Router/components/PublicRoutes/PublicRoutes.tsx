@@ -1,9 +1,9 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import { Tutorial } from "@/pages";
-import { Configuration, Instalation, Success } from "@/pages/Tutorial/pages";
-import { Layout as LayoutTutorial } from "@/pages/Tutorial";
+import { Tutorial } from "../../../../pages";
+import { Configuration, Instalation, Success } from "../../../../pages/Tutorial/pages";
+import { Layout as LayoutTutorial } from "../../../../pages/Tutorial";
 
 const PublicRoures: React.FC = () => (
   <Routes>

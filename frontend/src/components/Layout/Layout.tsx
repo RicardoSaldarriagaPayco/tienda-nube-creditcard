@@ -4,29 +4,22 @@ import {
   Box,
   Button,
   Icon,
-  IconButton,
-  Link,
   Sidebar,
 } from "@nimbus-ds/components";
 import { AppShell, NavTabs } from "@nimbus-ds/patterns";
 import {
   ChevronLeftIcon,
-  MenuIcon,
-  MoonIcon,
-  QuestionCircleIcon,
-  SunIcon,
-  CodeIcon,
+  MenuIcon
 } from "@nimbus-ds/icons";
-import { useDarkMode } from "@/hooks";
+import { useDarkMode } from "../../hooks";
 import { handleActive, isExample, routes } from "./layout.definitions";
-import { Translator } from "@/app/I18n";
+import { Translator } from "../../app/I18n";
 import { Languages, Menu, Responsive } from "..";
 
 const Layout: React.FC = () => {
   const { pathname } = useLocation();
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode } = useDarkMode();
   const currentTheme = darkMode ? "dark" : "base";
-  const currentThemeIcon = darkMode ? <SunIcon /> : <MoonIcon />;
 
   const [active, setActive] = useState(currentTheme === "dark");
   const [openMenu, setOpenMenu] = useState(false);
@@ -88,28 +81,11 @@ const Layout: React.FC = () => {
                   </Button>
                 )
               }
-    
               rightSlot={
-                
                 <Box display="flex" gap="2-5" alignItems="center">
-                  {/*<Link
-                    textDecoration="none"
-                    as="a"
-                    href="https://github.com/TiendaNube/app-templates-hub"
-                  >
-                    <CodeIcon />
-                    Github
-                  </Link>*/}
                   <Languages />
-                  {/*<IconButton
-                    source={currentThemeIcon}
-                    onClick={toggleDarkMode}
-                    size="2rem"
-                  />*/}
                 </Box>
-                
               }
-                
             />
             <Outlet />
           </AppShell>

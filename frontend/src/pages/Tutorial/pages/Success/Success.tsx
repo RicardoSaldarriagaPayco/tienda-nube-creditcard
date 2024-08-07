@@ -1,30 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   Title,
   Text,
   Card,
-  Button,
   Box,
   useToast,
   Spinner
 } from "@nimbus-ds/components";
-import { IPayment } from "@/hooks/usePayment/payment.types";
-import { useAuth, useConfig, useFetch, useAuthentication } from "@/hooks";
-import { Trans, useTranslation } from "react-i18next";
+import { IPayment } from "../../../../hooks/usePayment/payment.types";
+import { useAuth, useFetch  } from "../../../../hooks";
+import { useTranslation } from "react-i18next";
 
-
-const apiURL = process.env.apiURL??"http://localhost:8000";
 
 const Success: React.FC = () => {
   const { auth } = useAuth();
-  const { config } = useConfig();
   const { request } = useFetch();
   const { addToast } = useToast();
-  const navigate = useNavigate();
   const [isLoading, setLoaging] = useState(true);
   const { t } = useTranslation("translations");
-  //useAuthentication();
   useEffect(() => {
     if (auth) {
       onSetUp()
@@ -71,6 +64,7 @@ const Success: React.FC = () => {
                 }
               })
               .catch((error) => {
+                console.log(error)
                 addToast({
                   type: "danger",
                   text: "Please try later",
@@ -81,6 +75,7 @@ const Success: React.FC = () => {
           }
         })
         .catch((error) => {
+          console.log(error)
           addToast({
             type: "danger",
             text: "Please fill in your app settings",

@@ -6,7 +6,7 @@ import { GlobeIcon, ChevronDownIcon } from "@nimbus-ds/icons";
 import { languages } from "./languages.definitions";
 
 const Languages: React.FC = () => {
-  const { t, i18n } = useTranslation("footer");
+  const { i18n } = useTranslation("footer");
 
   return (
     <Popover
@@ -33,15 +33,6 @@ const Languages: React.FC = () => {
           >
             English
           </Link>
-          {/*<Link
-            as="button"
-            onClick={() => i18n.changeLanguage("pt-BR")}
-            fontSize="highlight"
-            lineHeight="highlight"
-            textDecoration="none"
-          >
-            Português
-          </Link>*/}
         </Box>
       }
     >

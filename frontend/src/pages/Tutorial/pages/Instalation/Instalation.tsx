@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation, Trans } from "react-i18next";
 import { Box, Accordion, Text, Card, Link } from "@nimbus-ds/components";
-import { useConfig } from "@/hooks";
+import { useConfig } from "../../../../hooks";
 
 const Instalation: React.FC = () => {
   const { t } = useTranslation("translations");
