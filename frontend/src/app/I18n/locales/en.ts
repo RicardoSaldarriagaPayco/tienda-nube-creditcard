@@ -1,5 +1,35 @@
 export default {
     translations: {
+      menu: {
+        home: "Comenzar",
+        "examples-gallery": "Galería de ejemplo",
+        "store-products": "Productos de mi tienda",
+      },
+      "base-layout": {
+        help: "Ayuda para desarrolladores",
+        back: "Voltar",
+        "aria-label": {
+          menu: "Menú principal",
+        },
+      },
+      home: {
+        "first-card": {
+          title: "¡Felicitaciones por crear su aplicación!",
+          description:
+            "Esta aplicación de ejemplo incluye nuestro <0>Nimbus Design System</0> y la integración con la <1>API Tiendanube/Nuvemshop</1> para facilitar el desarrollo de nuevas aplicaciones para nuestro ecosistema.",
+          link: {
+            text: "Obtenga más información sobre cómo crear su aplicación",
+            url: "https://dev.tiendanube.com/docs/applications/overview",
+          },
+        },
+        "second-card": {
+          title: "Mostrador de productos de la tienda",
+          description:
+            "Los productos de ejemplo se crean con el nombre y el precio aleatorios como ejemplo. Puedes modificarlos y eliminarlos en cualquier momento.",
+          "total-product": "Productos totales",
+          "create-products": "Crear producto",
+        },
+      },
       tutorial: {
         title: "Completa el proceso de autenticación",
         firstTitle: "You do not have an account?",
@@ -24,6 +54,16 @@ export default {
         ready: "Ready!",
         configured: "Your application has been successfully configure",
         shop: "go to the shop"
+      },
+      products: {
+        title: "Productos de la tienda",
+        name: "Nombre",
+        remove: "Borrar",
+        "no-content": "No hay productos para mostrar",
+        selected: {
+          single: "Seleccionado",
+          many: "Seleccionados",
+        },
       },
     },
   };

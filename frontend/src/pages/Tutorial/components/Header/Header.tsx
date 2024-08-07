@@ -1,11 +1,21 @@
-import React from "react";
-import { Box, Icon, Link } from "@nimbus-ds/components";
-import Languages from "../Languages";
+import React, { useEffect, useState } from "react";
+import { Box, Icon, IconButton, Link } from "@nimbus-ds/components";
+import { CodeIcon, MoonIcon, SunIcon } from "@nimbus-ds/icons";
+import { useDarkMode } from "@/hooks";
+import { Languages } from "@/components";
 import Logo from './logo.svg?react'
 
-
-
 const Header: React.FC = () => {
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  const currentTheme = darkMode ? "dark" : "base";
+  const currentThemeIcon = darkMode ? <SunIcon /> : <MoonIcon />;
+
+  const [active, setActive] = useState(currentTheme === "dark");
+
+  useEffect(() => {
+    document.body.className = currentTheme;
+    setActive(currentTheme === "dark");
+  }, [currentTheme, active]);
 
   return (
     <Box
@@ -25,7 +35,20 @@ const Header: React.FC = () => {
         />
       </Link>
       <Box display="flex" gap="2-5" alignItems="center">
+        {/*<Link
+          textDecoration="none"
+          as="a"
+          href="https://github.com/TiendaNube/app-templates-hub"
+        >
+          <CodeIcon />
+          Github
+        </Link>*/}
         <Languages />
+        {/*<IconButton
+          source={currentThemeIcon}
+          onClick={toggleDarkMode}
+          size="2rem"
+        />*/}
       </Box>
     </Box>
   );

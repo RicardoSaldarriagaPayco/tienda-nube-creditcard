@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Card, useToast, Spinner } from "@nimbus-ds/components";
 import { FormField } from "@nimbus-ds/patterns";
-import { IConfig } from "../../../../hook/useConfig";
-import { useConfig, useFetch, useAuth } from "../../../../hook";
-import { IAuth } from "../../../../hook/useAuth/useAuth.types";
+
+import { IConfig } from "@/hooks/useConfig";
+import { useAuth, useConfig, useFetch } from "@/hooks";
+import { IAuth } from "@/hooks/useAuth/useAuth.types"; 
 
 import { useTranslation, Trans } from "react-i18next";
 
@@ -20,12 +21,15 @@ const Configuration: React.FC = () => {
   const query = new URLSearchParams(window.location.search);
   const code = query.get("code");
   const { request } = useFetch();
-  const { setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const { t } = useTranslation("translations");
-  const [isLoading, setLoading] = useState(true);
+  const [isLoading, setLoaging] = useState(true);
+
   const [form, setForm] = useState<IConfig>(config ?? (initialConfig as IConfig));
+
+  useEffect(() => onAuthentication(), []);
 
   const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevState: IConfig) => ({
@@ -33,8 +37,6 @@ const Configuration: React.FC = () => {
       [evt.target.name]: evt.target.value.trim(),
     }));
   };
-
-  useEffect(() => onAuthentication(), []);
 
   const onAuthentication = () => {
     if (code) {
@@ -52,7 +54,7 @@ const Configuration: React.FC = () => {
               access_token,
               user_id
             }));
-            setLoading(false)
+            setLoaging(false)
           }
         })
         .catch((error) => {
@@ -64,7 +66,7 @@ const Configuration: React.FC = () => {
           });
         });
     }else{
-      setLoading(false)
+      setLoaging(false)
     }
   };
 
@@ -77,6 +79,7 @@ const Configuration: React.FC = () => {
       })
         .then((response) => {
           if (response.content) {
+            //setAuth(response.content);
             navigate("/success");
           }
         })
@@ -101,13 +104,15 @@ const Configuration: React.FC = () => {
         </Box>
       </Card>:
       <Card>
-
+        {/*<Card.Header title="Configurar Variables" />*/}
         <Box
           as="form"
           onSubmit={(evt) => {
             evt.preventDefault();
             setConfig(form as IConfig);
             onSetUp();
+            //alert("ss")
+            //navigate("/success");
           }}
           display="flex"
           flexDirection="column"

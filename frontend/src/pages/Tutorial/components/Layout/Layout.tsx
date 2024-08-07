@@ -1,17 +1,16 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Box, Title, Text } from "@nimbus-ds/components";
-import { Header } from "..";
+import { Header, ListSteps } from "..";
 import { useTranslation, Trans } from "react-i18next";
-import { Responsive } from "..";
-
+import { Responsive } from "@/components";
 
 const Layout: React.FC = () => {
   const { t } = useTranslation("translations");
   return (
     <>
-    <Header />
-    <Responsive
+      <Header />
+      <Responsive
        mobileContent={
         <Box pb="16"
         backgroundColor="neutral-surface"

@@ -1,7 +1,9 @@
-import esTranslations from "./es";
-import enTranslations from "./en";
+import ptBRTranslations from "./pt-br";
+import esARTranslations from "./es-ar";
+import enARTranslations from "./en";
 
 export default {
-  "es": esTranslations,
-  "en": enTranslations,
+  "pt-BR": ptBRTranslations,
+  "es-AR": esARTranslations,
+  "en": enARTranslations,
 };

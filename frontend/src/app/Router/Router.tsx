@@ -1,12 +1,17 @@
 import React from "react";
-import { PublicRoures } from "./components";
+
+import { useAuth } from "@/hooks";
+import { PrivateRoutes, PublicRoures } from "./components";
 
 const Router: React.FC = () => {
-    return (
-        <>
-            <PublicRoures />
-        </>
-    )
-}
+  const { auth } = useAuth();
+  return (
+    <>
+      {/*{auth?.access_token && <PrivateRoutes />}
+      {!auth?.access_token && <PublicRoures />}*/}
+      <PublicRoures />
+    </>
+  );
+};
 
 export default Router;

@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { ToastProvider } from "@nimbus-ds/components";
 
-import Router from "./Router";
+import Router from "@/app/Router";
 import { DarkModeProvider } from "./DarkModeProvider";
 import "./I18n";
 
