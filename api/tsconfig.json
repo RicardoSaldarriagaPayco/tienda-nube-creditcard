@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "Node16",
+    "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./src",
     "allowSyntheticDefaultImports": true,
     "composite": true,
     "allowJs": false,
@@ -11,7 +10,7 @@
     "esModuleInterop": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node16",
+    "moduleResolution": "node",
     "noEmit": true,
     "baseUrl": ".",
     "typeRoots": ["./src/typings", "./node_modules/@types"],
