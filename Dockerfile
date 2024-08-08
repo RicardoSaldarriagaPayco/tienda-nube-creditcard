@@ -1,5 +1,5 @@
 # Etapa 1: Construcción del frontend
-FROM node:18-alpine AS builder
+FROM node:21-alpine AS builder
 
 # Establecer directorio de trabajo
 WORKDIR /app
@@ -16,7 +16,7 @@ COPY frontend ./frontend
 RUN cd frontend && npm run build
 
 # Etapa 2: Configuración del api y del servidor web
-FROM node:18-alpine
+FROM node:21-alpine
 
 # Establecer directorio de trabajo
 WORKDIR /app
