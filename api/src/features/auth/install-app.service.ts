@@ -1,7 +1,7 @@
-import { tiendanubeAuthClient, tiendanubeApiStore } from "@config";
-import { BadRequestException } from "@utils";
-import { userRepository } from "@repository";
-import { TiendanubeAuthRequest, TiendanubeAuthInterface, TiendanubeStoreInterface } from "@features/auth";
+import { tiendanubeAuthClient, tiendanubeApiStore } from "../../config";
+import { BadRequestException } from "../../utils";
+import { userRepository } from "../../repository";
+import { TiendanubeAuthRequest, TiendanubeAuthInterface, TiendanubeStoreInterface } from "../../features/auth";
 
 class InstallAppService {
   public async install(code: string): Promise<TiendanubeAuthInterface> {

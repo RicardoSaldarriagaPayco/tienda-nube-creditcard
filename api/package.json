@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon --watch 'src/**/*.ts' --watch './.env'",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "docker": "npm run setup && npm run build",
+    "setup": "prisma generate"
   },
   "author": "",
   "license": "ISC",

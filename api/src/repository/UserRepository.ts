@@ -1,16 +1,5 @@
-import jsonServer from "json-server";
-import prisma from "src/config/tiendanube-db.client";
-import path from "path";
-import { TiendanubeAuthInterface, LoginRequestInterface, TiendanubeStoreInterface } from "@features/auth";
-import { HttpErrorException } from "@utils";
-import { da } from "@faker-js/faker";
-
-
-interface IDatabase {
-  Session: TiendanubeAuthInterface[];
-}
-
-
+import prisma from "../config/tiendanube-db.client";
+import { TiendanubeAuthInterface, LoginRequestInterface, TiendanubeStoreInterface } from "../features/auth";
 
 class UserRepository {
   save(credential: TiendanubeAuthInterface, store: TiendanubeStoreInterface) {

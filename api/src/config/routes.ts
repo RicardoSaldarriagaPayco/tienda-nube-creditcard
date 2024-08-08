@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { AuthenticationController } from "@features/auth";
-import { PaymentController } from "@features/payment";
-import { checkUserCredentialsMiddleware } from "@middlewares";
+import { AuthenticationController } from "../features/auth";
+import { PaymentController } from "../features/payment";
+import { checkUserCredentialsMiddleware } from "../middlewares";
 //const payment = require('../payment.js');
 
 const routes = Router();

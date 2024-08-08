@@ -32,7 +32,7 @@ RUN cd api && npm install
 COPY api ./api
 
 # Compilar TypeScript en el backend
-RUN cd api && npm run build
+RUN cd api && npm run docker
 
 # Copiar archivos construidos del frontend al directorio estático del backend
 COPY --from=builder /app/frontend/dist ./api/public

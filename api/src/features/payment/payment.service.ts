@@ -1,4 +1,4 @@
-import { tiendanubeApiClient } from "@config";
+import { tiendanubeApiClient } from "../../config";
 import {IPaymentResponse} from "./interface/payment.interface";
 
 class PaymentService{

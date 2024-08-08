@@ -8,11 +8,11 @@ dotenv.config({
   path: path.resolve(".env"),
 });
 
-import { AppRoutes } from "@config";
+import { AppRoutes } from "./config";
 import {
   beforeCheckClientMiddleware,
   errorHandlingMiddleware,
-} from "@middlewares";
+} from "./middlewares";
 
 const port = process.env.PORT || 3000;
 const app = express();

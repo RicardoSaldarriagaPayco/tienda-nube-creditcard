@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { StatusCode } from "@utils";
+import { StatusCode } from "../../utils";
 import PaymentService from "./payment.service";
 //import { ProductService } from "@features/product";
 
