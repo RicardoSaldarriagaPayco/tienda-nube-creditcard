@@ -9,7 +9,7 @@ import { IAuth } from "../../../../hooks/useAuth/useAuth.types";
 
 import { useTranslation, Trans } from "react-i18next";
 
-const apiURL = import.meta.env.VITE_API_URL??"http://localhost:3000";
+const apiURL = import.meta.env.VITE_API_URL;
 const initialConfig = {
   clientId: "7882",
   appName: "ePayco",

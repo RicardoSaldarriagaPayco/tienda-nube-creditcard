@@ -15,7 +15,7 @@ const useAuthentication = () => {
   const { config } = useConfig();
 
   useEffect(() => onAuthentication(), []);
-  const apiURL = import.meta.env.VITE_API_URL??"http://localhost:3000";
+  const apiURL = import.meta.env.VITE_API_URL;
   const onAuthentication = () => {
     if (config?.apiURL) {
       request<IAuth>({

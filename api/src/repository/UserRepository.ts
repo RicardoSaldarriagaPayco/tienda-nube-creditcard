@@ -8,7 +8,7 @@ class UserRepository {
 
   async findOne(user_id: number) {
     try{
-      const store = await prisma.session.findFirst({
+      const store = await prisma.tiendanubeSession.findFirst({
         where: { user_id }
       })
       return store;
@@ -23,7 +23,7 @@ class UserRepository {
     try{  
       const {user_id} = data.config ;
 
-      const configuration = await prisma.session.findFirst({
+      const configuration = await prisma.tiendanubeSession.findFirst({
         where: { user_id }
       });
       if(data){
@@ -42,11 +42,11 @@ class UserRepository {
       const { access_token, token_type, scope, user_id } = data;
       const {url_with_protocol} = store; 
 
-      var tiendanube_tdc_session = await prisma.session.findFirst({
+      var tiendanube_tdc_session = await prisma.tiendanubeSession.findFirst({
         where: { user_id }
       })
       if(tiendanube_tdc_session){
-        await prisma.session.update({
+        await prisma.tiendanubeSession.update({
           where: { user_id },
           data:{  
             access_token,
@@ -55,7 +55,7 @@ class UserRepository {
           }
         })
       }else{
-        await prisma.session.create({
+        await prisma.tiendanubeSession.create({
           data: {
             access_token,
             token_type,
