@@ -48,7 +48,7 @@ class PaymentService{
             "configuration_url": "https://dashboard.epayco.com/",
             "support_url": "https://epayco.com/contacto/",
             "rates_url": "https://epayco.com/tarifas/",
-            "checkout_js_url": "https://mypayments.com/checkout.min.js",
+            "checkout_js_url": "https://plugins.epayco.io/develop/payment.js",
             "supported_currencies": [
               "COP",
               "USD"
