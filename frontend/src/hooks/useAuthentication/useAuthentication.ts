@@ -15,17 +15,17 @@ const useAuthentication = () => {
   const { config } = useConfig();
 
   useEffect(() => onAuthentication(), []);
-
+  const apiURL = import.meta.env.VITE_API_URL??"http://localhost:3000";
   const onAuthentication = () => {
     if (config?.apiURL) {
       request<IAuth>({
-        url: code ? `/auth/install?code=${code}` : "/auth/login",
+        url: code ? apiURL+`/auth/install?code=${code}` : apiURL+"/auth/login",
         method: code ? "GET" : "POST",
         data: config
       })
         .then((response) => {
           if (response.content) {
-            navigate("/success");
+            navigate("/configuration");
             setAuth(response.content);
           }
         })

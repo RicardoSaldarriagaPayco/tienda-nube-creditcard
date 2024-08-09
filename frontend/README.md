@@ -1,2 +1,2 @@
-# ePayco credit card front
+# ePayco frontend tiendanube creditcard
 

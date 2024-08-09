@@ -4,6 +4,7 @@ import path from "path";
 import svgr from "vite-plugin-svgr";
 import react from "@vitejs/plugin-react";
 
+// https://vitejs.dev/config/
 export default defineConfig({
   optimizeDeps: {
     include: [
@@ -23,10 +24,6 @@ export default defineConfig({
       },
     }),
   ],
-  build: {
-    outDir: 'dist',
-    chunkSizeWarningLimit: 1600,
-  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
