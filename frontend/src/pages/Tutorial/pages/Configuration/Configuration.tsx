@@ -9,7 +9,7 @@ import { IAuth } from "../../../../hooks/useAuth/useAuth.types";
 
 import { useTranslation, Trans } from "react-i18next";
 
-const apiURL = process.env.apiURL??"http://localhost:3000";
+const apiURL = import.meta.env.VITE_API_URL??"http://localhost:3000";
 const initialConfig = {
   clientId: "7882",
   appName: "ePayco",
@@ -79,7 +79,6 @@ const Configuration: React.FC = () => {
       })
         .then((response) => {
           if (response.content) {
-            //setAuth(response.content);
             navigate("/success");
           }
         })
@@ -104,15 +103,12 @@ const Configuration: React.FC = () => {
         </Box>
       </Card>:
       <Card>
-        {/*<Card.Header title="Configurar Variables" />*/}
         <Box
           as="form"
           onSubmit={(evt) => {
             evt.preventDefault();
             setConfig(form as IConfig);
             onSetUp();
-            //alert("ss")
-            //navigate("/success");
           }}
           display="flex"
           flexDirection="column"
