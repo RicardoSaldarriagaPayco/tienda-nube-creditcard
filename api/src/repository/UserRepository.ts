@@ -101,6 +101,20 @@ class UserRepository {
     }
 
   }
+
+
+  async getCredentials(user_id: number) {
+    try{
+      const store = await prisma.tiendanubeTdcCredentials.findFirst({
+        where: { user_id }
+      })
+      return store;
+    } catch (error) {
+      console.error('Error al hacer findOne:', error);
+    } finally {
+      await prisma.$disconnect();
+    }
+  }
 }
 
 export default new UserRepository();

@@ -50,4 +50,16 @@ next-env.d.ts
 
 .yarnrc.yml
 
-.dist
+package-lock.json
+yarn.lock
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+./dist

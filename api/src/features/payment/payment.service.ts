@@ -1,5 +1,7 @@
 import { tiendanubeApiClient } from "../../config";
-import {IPaymentResponse} from "./interface/payment.interface";
+import {IPaymentResponse, IOrderResponse, IProducts} from "./interface/payment.interface";
+import { userRepository } from "../../repository";
+import PaymentsAppsEpayco from "./epayco.service";
 
 class PaymentService{
 
@@ -71,7 +73,7 @@ class PaymentService{
                   ],
                   "specification": [
                     {
-                      "installments": 1,
+                      "installments": 48,
                       "interest_rate": "0.00",
                       "applies_to": [
                         "amex",
@@ -147,7 +149,324 @@ class PaymentService{
             "enabled": true
           }
     }
-           
+
+    async getCreditcard(creditCard:any){
+
+      const user_id = creditCard.storeId
+      const user =  await userRepository.getCredentials(user_id);
+      const session =  await userRepository.findOne(user_id);
+      const access_token  = session?.access_token
+
+      const order:IOrderResponse =  await tiendanubeApiClient.request({
+        url:`${user_id}/orders/${creditCard.orderId}`,
+        method:'GET',
+        headers:{
+            "Content-Type": "application/json",
+            "Authentication": `bearer ${access_token}`
+        }
+      });
+      const {products, contact_email, gateway, language, payment_status, updated_at, landing_url} = order
+      var description:any = [];
+      products.forEach(product => {
+        description.push(product.name)
+      });
+      const products_descriptions = description.join(", ");
+
+      const ip = await this.getIp();
+      const lang = language;
+      const cardNumber = creditCard.card.number.toString();
+      const cardExpYear = "20"+creditCard.card.expiration.toString().split("/")[1];
+      const cardExpMonth = creditCard.card.expiration.toString().split("/")[0];
+      const cardCvc = creditCard.card.cvv.toString();
+      const name = creditCard.card.name.split(" ")[0];
+      const lastName = creditCard.card.name.split(" ")[1];
+      const country_code = creditCard.billingAddress.country;
+      const city = creditCard.billingAddress.city;
+      const address = creditCard.billingAddress.address;
+      const cellPhone = "0000000000";
+      const phone = creditCard.billingAddress.phone?creditCard.billingAddress.phone:"0000000";
+      const invoice = creditCard.orderId.toString();
+      const value = creditCard.total.toString();
+      const currency = creditCard.currency;
+      const test = true;
+      const urlConfirmation = this.comfirm_url(user_id, creditCard.orderId);
+      const methodConfirmation	= 'POST';
+      const extras_epayco = {"extra5":"P300"}
+      const payment:IPaymentResponse[] =  await tiendanubeApiClient.request({
+        url:`${user_id}/payment_providers`,
+        method:'GET',
+        headers:{
+            "Content-Type": "application/json",
+            "Authentication": `bearer ${access_token}`
+        }
+      });
+      var payment_id;
+      payment.forEach(payment_ => {
+        payment_id = payment_.id
+      })
+      const payload = { 
+        email:contact_email,
+        name,
+        lastName,
+        country:country_code,
+        city,
+        address,
+        cellPhone,
+        phone,
+        invoice,
+        value,
+        currency,
+        docNumber:"0000000",
+        docType:"CC",
+        cardNumber,
+        cardExpYear,
+        cardExpMonth,
+        cardCvc,
+        dues: creditCard.card.installments,
+        testMode: test,
+        urlConfirmation,
+        methodConfirmation,
+        description:products_descriptions,
+        lang,
+        ip,
+        extras_epayco,
+        extra1:payment_id,
+        extra2:updated_at
+      };
+      const epayco = new PaymentsAppsEpayco({publicKey: user?.publicKey,privateKey: user?.privateKey, lang: lang, test: test});
+      const {token} = await epayco.sessionToken();
+      epayco.accessToken= `Bearer ${token}`;
+      const {success, data} = await epayco.charge(payload);
+
+      if(!success){
+        return {"returnUrl":creditCard.callbackUrls.cancel};
+      }else{
+        const {transaction} = data;
+        const {franquicia, ref_payco, fecha, autorizacion} = transaction.data;
+        const estado = transaction.data.estado.toLowerCase()
+        this.uploadOrderStatus(estado, payment_status, ref_payco, fecha, franquicia, autorizacion, payment_id, value, currency, updated_at, user_id, invoice, access_token);
+        /*var status_payment;
+        switch (estado) {
+          case "aceptada":
+            status_payment='pending'
+            if(payment_status =='pending'
+              ||payment_status =='voided'){
+                status_payment='paid'
+            }
+            break;
+          case "pendiente":
+          case "retenido":
+          case "iniciada":
+            status_payment='pending'
+            break;
+          default:
+            status_payment='error'
+        }
+        const order_note ={
+          owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
+          status:status_payment  
+        }
+
+        const dataPayment = this.handlePayment(payment_id,franquicia,value,currency,status_payment,updated_at);
+        await this.processPayment(user_id,invoice,access_token,dataPayment);
+        await this.updateOrderNote(user_id,invoice,access_token,order_note);*/
+
+        if(estado =='aceptada'
+          ||estado =='pendiente'
+          ||estado =='retenido'
+          ||estado =='iniciada'
+        ){
+          return {"returnUrl":creditCard.callbackUrls.success};
+        }else{
+          return {"returnUrl":creditCard.callbackUrls.cancel};
+        }
+      }
+    }
+
+    private async processPayment(user_id:string, orderId:string, access_token:any, query:any) {
+      try{
+        const payment =  await tiendanubeApiClient.request({
+          url:`${user_id}/orders/${orderId}/transactions`,
+          method:'POST',
+          headers:{
+              "Content-Type": "application/json",
+              "Authentication": `bearer ${access_token}`
+          },
+          data: query
+        });
+        return payment;
+      } catch (e) {
+        console.log(e)
+      }
+     
+    }
+
+    private async getIp() {
+      return await fetch('https://api.ipify.org/?format=json')
+        .then(res => res.json())
+        .then(data => data.ip);
+    }
+
+     /**
+     * Generic sessionToken resolution function
+     * @returns the response body from the ePayco API
+     */
+     async sessionToken(accessToken:string) {
+      const response = await this.#perform([], 'login', accessToken);
+      return response;
+  }
+
+  
+    /**
+   * Client perform function. Calls ePayco API.
+   * @param {*} query the query to run
+   * @param {*} path 
+   * @returns
+   */
+    async #perform(query:any, path:string, accessToken:string) {
+      const BASE_URL_APIFY = process.env.BASE_URL_APIFY || 'https://apify.epayco.io';
+      const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': accessToken
+        }
+  
+      const response = await fetch(BASE_URL_APIFY+`/${path}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(query)
+      })
+      console.log(`[apify] Making request for path: "${path}"`)
+  
+      const responseBody = await response.json();
+      console.log(`[apify] response: ${JSON.stringify(responseBody)}`);
+  
+      return response.ok ? responseBody : null
+    }
+
+    private comfirm_url(user_id:string, orderId:string) {
+      const API_URL = process.env.API_URL || 'https://tienda-nube-tdc-api.epayco.io';
+      return`${API_URL}/${user_id}/confirmation/${orderId}`;
+
+    }
+
+    private getFranchise(franchise:string){
+      switch (franchise) {
+        case "VS":
+            return "visa"
+          break;
+        case "CR":
+        case "AM":  
+         return "amex"
+          break;
+        case "DC":
+          return "diners"
+          break;
+        case "MC":
+          return "mastercard"
+          break;
+      }
+    }
+
+    private handlePayment(payment_id:any,franquicia:string,value:string, currency:string, status_payment:any,updated_at:string){
+      var orderDate_explode = updated_at.split('+');
+      return {
+        "payment_provider_id":payment_id,
+        "payment_method":{
+          type:"credit_card",
+          id: this.getFranchise(franquicia)
+        },
+        info:{
+          installments:{
+            quantity:1,
+            interest:"0.0"
+          }
+        },
+        first_event:{
+          amount:{
+            value,
+            currency
+          },
+          type:"sale",
+          status:status_payment,
+          happened_at:orderDate_explode[0] + "z"
+        }
+      }
+    }
+
+    private async updateOrderNote(user_id:string, orderId:string, access_token:any, query:any) {
+      try{
+        const payment =  await tiendanubeApiClient.request({
+          url:`${user_id}/orders/${orderId}`,
+          method:'PUT',
+          headers:{
+              "Content-Type": "application/json",
+              "Authentication": `bearer ${access_token}`
+          },
+          data: query
+        });
+        return payment;
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    private async uploadOrderStatus(
+      estado:string,
+      payment_status:string,
+      ref_payco: string,
+      fecha:string,
+      franquicia:string,
+      autorizacion: string,
+      payment_id: any,
+      value: string,
+      currency: string,
+      updated_at: string,
+      user_id: string,
+      invoice: string,
+      access_token: any
+    ){
+      var status_payment;
+        switch (estado) {
+          case "aceptada":
+            status_payment='pending'
+            if(payment_status =='pending'
+              ||payment_status =='voided'){
+                status_payment='paid'
+            }
+            break;
+          case "pendiente":
+          case "retenido":
+          case "iniciada":
+            status_payment='pending'
+            break;
+          default:
+            status_payment='error'
+        }
+        const order_note ={
+          owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
+          status:status_payment  
+        }
+
+        const dataPayment = this.handlePayment(payment_id,franquicia,value,currency,status_payment,updated_at);
+        await this.processPayment(user_id,invoice,access_token,dataPayment);
+        await this.updateOrderNote(user_id,invoice,access_token,order_note);
+    }
+
+    async uploadPayment(creditCard:any){
+      const {user_id,order_id,access_token,x_extra1,x_extra2, x_respuesta, x_franchise, x_ref_payco, x_fecha_transaccion, x_approval_code} = creditCard;
+      const order:IOrderResponse =  await tiendanubeApiClient.request({
+        url:`${user_id}/orders/${order_id}`,
+        method:'GET',
+        headers:{
+            "Content-Type": "application/json",
+            "Authentication": `bearer ${access_token}`
+        }
+      });
+      const { payment_status, updated_at, total, currency} = order
+      const estado = x_respuesta.toLowerCase()
+      this.uploadOrderStatus(estado, payment_status, x_ref_payco, x_fecha_transaccion, x_franchise, x_approval_code, x_extra1, total, currency, updated_at, user_id, order_id, access_token);
+      return {"status":estado};
+    }
         
 }
 

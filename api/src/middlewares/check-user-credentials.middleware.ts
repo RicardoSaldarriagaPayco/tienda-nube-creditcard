@@ -9,7 +9,8 @@ export const checkUserCredentialsMiddleware = async (
 ): Promise<Response | void>  => {
   try {
     const result = await userRepository.findOne(+user_id);
-    _req.body = result;
+    const returnedTarget = Object.assign(_req.body, result);
+    _req.body = returnedTarget;
     next();
   } catch (e) {
     next(e);
