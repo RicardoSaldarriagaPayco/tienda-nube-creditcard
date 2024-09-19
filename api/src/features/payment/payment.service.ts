@@ -187,6 +187,7 @@ class PaymentService{
       const docNumber = creditCard.card.cardHolderIdNumber.toString();
       const docType = creditCard.card.cardHolderIdType.toString();
       const invoiceOrder = creditCard.orderId.toString()+date;
+      const invoice = creditCard.orderId.toString();
       const value = creditCard.total.toString();
       const currency = creditCard.currency;
       const test = user?.modo === 'test' ? true:false;
@@ -232,7 +233,8 @@ class PaymentService{
         ip,
         extras_epayco,
         extra1:payment_id,
-        extra2:updated_at
+        extra2:updated_at,
+        extra3:invoice
       };
       const epayco = new PaymentsAppsEpayco({publicKey: user?.publicKey,privateKey: user?.privateKey, lang: lang, test: test});
       const {token} = await epayco.sessionToken();
@@ -247,7 +249,7 @@ class PaymentService{
         const {transaction} = data;
         const {franquicia, ref_payco, fecha, autorizacion} = transaction.data;
         const estado = transaction.data.estado.toLowerCase()
-        await this.uploadOrderStatus(estado, payment_status, ref_payco, fecha, franquicia, autorizacion, payment_id, value, currency, updated_at, user_id, invoiceOrder, access_token);
+        await this.uploadOrderStatus(estado, payment_status, ref_payco, fecha, franquicia, autorizacion, payment_id, value, currency, updated_at, user_id, invoice, access_token);
 
         if(estado =='aceptada'
           ||estado =='pendiente'
@@ -278,7 +280,7 @@ class PaymentService{
           },
           data: query
         });
-        console.log(payment)
+        console.log(`processPayment: ${payment}`)
         return payment;
       } catch (e) {
         console.log(e)
@@ -389,7 +391,7 @@ class PaymentService{
           },
           data: query
         });
-        console.log(payment)
+        console.log(`updateOrderNote: ${payment}`)
         return payment;
       } catch (e) {
         console.log(e)
