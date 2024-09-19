@@ -170,7 +170,7 @@ class PaymentService{
         description.push(product.name)
       });
       const products_descriptions = description.join(", ");
-
+      var date = new Date().getTime();
       const ip = await this.getIp();
       const lang = language;
       const cardNumber = creditCard.card.number.toString();
@@ -186,7 +186,7 @@ class PaymentService{
       const phone = creditCard.billingAddress.phone?creditCard.billingAddress.phone:cellPhone;
       const docNumber = creditCard.card.cardHolderIdNumber.toString();
       const docType = creditCard.card.cardHolderIdType.toString();
-      const invoiceOrder = creditCard.orderId.toString();
+      const invoiceOrder = creditCard.orderId.toString()+date;
       const value = creditCard.total.toString();
       const currency = creditCard.currency;
       const test = user?.modo === 'test' ? true:false;
@@ -471,7 +471,7 @@ class PaymentService{
       });
       const { payment_status, updated_at, total, currency} = order
       const estado = x_respuesta.toLowerCase()
-      this.uploadOrderStatus(estado, payment_status, x_ref_payco, x_fecha_transaccion, x_franchise, x_approval_code, x_extra1, total, currency, updated_at, user_id, order_id, access_token);
+      await this.uploadOrderStatus(estado, payment_status, x_ref_payco, x_fecha_transaccion, x_franchise, x_approval_code, x_extra1, total, currency, updated_at, user_id, order_id, access_token);
       return {"status":estado};
     }
         
