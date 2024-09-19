@@ -151,7 +151,6 @@ class PaymentService{
     }
 
     async getCreditcard(creditCard:any){
-
       const user_id = creditCard.storeId
       const user =  await userRepository.getCredentials(user_id);
       const session =  await userRepository.findOne(user_id);
@@ -183,12 +182,14 @@ class PaymentService{
       const country_code = creditCard.billingAddress.country;
       const city = creditCard.billingAddress.city;
       const address = creditCard.billingAddress.address;
-      const cellPhone = "0000000000";
-      const phone = creditCard.billingAddress.phone?creditCard.billingAddress.phone:"0000000";
-      const invoice = creditCard.orderId.toString();
+      const cellPhone = creditCard.card.cardHolderPhone.toString();
+      const phone = creditCard.billingAddress.phone?creditCard.billingAddress.phone:cellPhone;
+      const docNumber = creditCard.card.cardHolderIdNumber.toString();
+      const docType = creditCard.card.cardHolderIdType.toString();
+      const invoiceOrder = creditCard.orderId.toString();
       const value = creditCard.total.toString();
       const currency = creditCard.currency;
-      const test = true;
+      const test = user?.modo === 'test' ? true:false;
       const urlConfirmation = this.comfirm_url(user_id, creditCard.orderId);
       const methodConfirmation	= 'POST';
       const extras_epayco = {"extra5":"P300"}
@@ -213,11 +214,11 @@ class PaymentService{
         address,
         cellPhone,
         phone,
-        invoice,
+        invoice:invoiceOrder,
         value,
         currency,
-        docNumber:"0000000",
-        docType:"CC",
+        docNumber,
+        docType,
         cardNumber,
         cardExpYear,
         cardExpMonth,
@@ -237,48 +238,31 @@ class PaymentService{
       const {token} = await epayco.sessionToken();
       epayco.accessToken= `Bearer ${token}`;
       const {success, data} = await epayco.charge(payload);
-
       if(!success){
-        return {"returnUrl":creditCard.callbackUrls.cancel};
+        return await{
+          "returnUrl":creditCard.callbackUrls.cancel,
+          "success":false
+        };
       }else{
         const {transaction} = data;
         const {franquicia, ref_payco, fecha, autorizacion} = transaction.data;
         const estado = transaction.data.estado.toLowerCase()
-        this.uploadOrderStatus(estado, payment_status, ref_payco, fecha, franquicia, autorizacion, payment_id, value, currency, updated_at, user_id, invoice, access_token);
-        /*var status_payment;
-        switch (estado) {
-          case "aceptada":
-            status_payment='pending'
-            if(payment_status =='pending'
-              ||payment_status =='voided'){
-                status_payment='paid'
-            }
-            break;
-          case "pendiente":
-          case "retenido":
-          case "iniciada":
-            status_payment='pending'
-            break;
-          default:
-            status_payment='error'
-        }
-        const order_note ={
-          owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
-          status:status_payment  
-        }
-
-        const dataPayment = this.handlePayment(payment_id,franquicia,value,currency,status_payment,updated_at);
-        await this.processPayment(user_id,invoice,access_token,dataPayment);
-        await this.updateOrderNote(user_id,invoice,access_token,order_note);*/
+        await this.uploadOrderStatus(estado, payment_status, ref_payco, fecha, franquicia, autorizacion, payment_id, value, currency, updated_at, user_id, invoiceOrder, access_token);
 
         if(estado =='aceptada'
           ||estado =='pendiente'
           ||estado =='retenido'
           ||estado =='iniciada'
         ){
-          return {"returnUrl":creditCard.callbackUrls.success};
+          return await{
+            "returnUrl":creditCard.callbackUrls.success,
+            "success":true
+          };
         }else{
-          return {"returnUrl":creditCard.callbackUrls.cancel};
+          return await{
+            "returnUrl":creditCard.callbackUrls.cancel,
+            "success":false
+          };
         }
       }
     }
@@ -294,6 +278,7 @@ class PaymentService{
           },
           data: query
         });
+        console.log(payment)
         return payment;
       } catch (e) {
         console.log(e)
@@ -404,6 +389,7 @@ class PaymentService{
           },
           data: query
         });
+        console.log(payment)
         return payment;
       } catch (e) {
         console.log(e)
@@ -413,7 +399,7 @@ class PaymentService{
     private async uploadOrderStatus(
       estado:string,
       payment_status:string,
-      ref_payco: string,
+      ref_payco: any,
       fecha:string,
       franquicia:string,
       autorizacion: string,
@@ -432,24 +418,45 @@ class PaymentService{
             if(payment_status =='pending'
               ||payment_status =='voided'){
                 status_payment='paid'
+                const order_note ={
+                  owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
+                  status:'pending'  
+                }
+                const dataPayment = this.handlePayment(payment_id,franquicia,value,currency,'pending',updated_at);
+                await this.processPayment(user_id,invoice,access_token,dataPayment);
+                await this.updateOrderNote(user_id,invoice,access_token,order_note);
+                const order_note_completed ={
+                  owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
+                  status:status_payment  
+                }
+                //const dataPaymentCompleted = this.handlePayment(payment_id,franquicia,value,currency,status_payment,updated_at);
+                //await this.processPayment(user_id,invoice,access_token,dataPaymentCompleted);
+                await this.updateOrderNote(user_id,invoice,access_token,order_note_completed);
             }
             break;
           case "pendiente":
           case "retenido":
           case "iniciada":
             status_payment='pending'
+            const order_note_pending ={
+              owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
+              status:status_payment  
+            }
+            const dataPaymentPending = this.handlePayment(payment_id,franquicia,value,currency,status_payment,updated_at);
+            await this.processPayment(user_id,invoice,access_token,dataPaymentPending);
+            await this.updateOrderNote(user_id,invoice,access_token,order_note_pending);
             break;
           default:
             status_payment='error'
-        }
-        const order_note ={
-          owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
-          status:status_payment  
+            const order_note_cancel ={
+              owner_note:`Pago con ePayco, \nref_payco: ${ref_payco} \nFecha y hora transacción: ${fecha} \nFranquicia/Medio de pago: ${franquicia} \nCódigo de autorización: ${autorizacion}`,
+              status:status_payment  
+            }
+            const dataPaymentCancel = this.handlePayment(payment_id,franquicia,value,currency,status_payment,updated_at);
+            await this.processPayment(user_id,invoice,access_token,dataPaymentCancel);
+            await this.updateOrderNote(user_id,invoice,access_token,order_note_cancel);
         }
 
-        const dataPayment = this.handlePayment(payment_id,franquicia,value,currency,status_payment,updated_at);
-        await this.processPayment(user_id,invoice,access_token,dataPayment);
-        await this.updateOrderNote(user_id,invoice,access_token,order_note);
     }
 
     async uploadPayment(creditCard:any){

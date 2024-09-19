@@ -21,7 +21,7 @@ class UserRepository {
 
   async findFirst(data:LoginRequestInterface){
     try{  
-      const {user_id} = data.config ;
+      const {user_id} = data.form ;
 
       const configuration = await prisma.tiendanubeSession.findFirst({
         where: { user_id }
@@ -74,7 +74,7 @@ class UserRepository {
 
   private async createOrUpdateRedential(data: LoginRequestInterface, configuration:any) {
    try{
-    const { pCustId, publicKey, privateKey, pKey} = data.config;
+    const { pCustId, publicKey, privateKey, pKey, modo} = data.form;
     const { user_id } = configuration;
     const result = await prisma.tiendanubeTdcCredentials.upsert({
       where: { user_id }, // Condition to find the record
@@ -83,6 +83,7 @@ class UserRepository {
         publicKey,
         privateKey,
         pKey,
+        modo,
       },
       create: {
         user_id, // User ID
@@ -90,6 +91,7 @@ class UserRepository {
         publicKey,
         privateKey,
         pKey,
+        modo,
       },
     });
 

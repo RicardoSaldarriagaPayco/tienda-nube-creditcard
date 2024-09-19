@@ -5,7 +5,40 @@ LoadCheckoutPaymentContext(function(Checkout, PaymentOptions) {
         fields: {
           card_holder_id_number: true,
           card_holder_phone: true,
-          card_holder_id_types: true
+          card_holder_id_types: [
+              {
+                  code: 'NIT',
+                  name: 'NIT'
+              },
+              {
+                  code: 'CC',
+                  name: 'CC'
+              },
+              {
+                  code: 'CE',
+                  name: 'CE'
+              },
+              {
+                  code: 'TI',
+                  name: 'TI'
+              },
+              {
+                  code: 'PPN',
+                  name: 'PPN'
+              },
+              {
+                  code: 'SSN',
+                  name: 'SSN'
+              },
+              {
+                  code: 'LIC',
+                  name: 'LIC'
+              },
+              {
+                  code: 'DNI',
+                  name: 'DNI'
+              }
+          ]
         },
         onSubmit: function(callback) {
             let acmeRelevantData = {

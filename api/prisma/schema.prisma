@@ -25,6 +25,7 @@ model TiendanubeTdcCredentials {
   publicKey    String
   privateKey   String
   pKey         String
+  modo         String
   Session      TiendanubeSession   @relation(fields: [user_id], references: [user_id])
 
   @@map("tiendanube_tdc_credentials")

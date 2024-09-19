@@ -42,7 +42,8 @@ class PaymentController {
     try {
       const data = JSON.stringify(req.body);
       const datas = await PaymentService.getCreditcard(JSON.parse(data));
-      res.redirect(datas.returnUrl)
+      //res.redirect(datas.returnUrl)
+      return res.status(StatusCode.CREATED).json(datas);
     } catch (e) {
       next(e);
     }
