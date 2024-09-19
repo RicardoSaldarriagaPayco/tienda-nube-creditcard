@@ -151,13 +151,14 @@ class PaymentService{
     }
 
     async getCreditcard(creditCard:any){
-      const user_id = creditCard.storeId
+      const user_id = creditCard.storeId;
+      const orderId = creditCard.orderId;
       const user =  await userRepository.getCredentials(user_id);
       const session =  await userRepository.findOne(user_id);
       const access_token  = session?.access_token
 
       const order:IOrderResponse =  await tiendanubeApiClient.request({
-        url:`${user_id}/orders/${creditCard.orderId}`,
+        url:`${user_id}/orders/${orderId}`,
         method:'GET',
         headers:{
             "Content-Type": "application/json",
@@ -186,12 +187,11 @@ class PaymentService{
       const phone = creditCard.billingAddress.phone?creditCard.billingAddress.phone:cellPhone;
       const docNumber = creditCard.card.cardHolderIdNumber.toString();
       const docType = creditCard.card.cardHolderIdType.toString();
-      const invoiceOrder = creditCard.orderId.toString()+date;
-      const invoice = creditCard.orderId.toString();
+      const invoiceOrder = orderId.toString()+date;
       const value = creditCard.total.toString();
       const currency = creditCard.currency;
       const test = user?.modo === 'test' ? true:false;
-      const urlConfirmation = this.comfirm_url(user_id, creditCard.orderId);
+      const urlConfirmation = this.comfirm_url(user_id, orderId);
       const methodConfirmation	= 'POST';
       const extras_epayco = {"extra5":"P300"}
       const payment:IPaymentResponse[] =  await tiendanubeApiClient.request({
@@ -234,7 +234,7 @@ class PaymentService{
         extras_epayco,
         extra1:payment_id,
         extra2:updated_at,
-        extra3:invoice
+        extra3:orderId
       };
       const epayco = new PaymentsAppsEpayco({publicKey: user?.publicKey,privateKey: user?.privateKey, lang: lang, test: test});
       const {token} = await epayco.sessionToken();
@@ -249,7 +249,7 @@ class PaymentService{
         const {transaction} = data;
         const {franquicia, ref_payco, fecha, autorizacion} = transaction.data;
         const estado = transaction.data.estado.toLowerCase()
-        await this.uploadOrderStatus(estado, payment_status, ref_payco, fecha, franquicia, autorizacion, payment_id, value, currency, updated_at, user_id, invoice, access_token);
+        await this.uploadOrderStatus(estado, payment_status, ref_payco, fecha, franquicia, autorizacion, payment_id, value, currency, updated_at, user_id, orderId, access_token);
 
         if(estado =='aceptada'
           ||estado =='pendiente'
@@ -280,7 +280,7 @@ class PaymentService{
           },
           data: query
         });
-        console.log(`processPayment: ${payment}`)
+        console.log(`processPayment: ${JSON.stringify(payment)}`)
         return payment;
       } catch (e) {
         console.log(e)
@@ -391,7 +391,7 @@ class PaymentService{
           },
           data: query
         });
-        console.log(`updateOrderNote: ${payment}`)
+        console.log(`updateOrderNote: ${JSON.stringify(payment)}`)
         return payment;
       } catch (e) {
         console.log(e)
@@ -410,7 +410,7 @@ class PaymentService{
       currency: string,
       updated_at: string,
       user_id: string,
-      invoice: string,
+      invoice: any,
       access_token: any
     ){
       var status_payment;
