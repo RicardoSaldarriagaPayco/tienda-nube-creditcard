@@ -270,9 +270,10 @@ class PaymentService{
     }
 
     private async processPayment(user_id:string, orderId:string, access_token:any, query:any) {
+      const url = `${user_id}/orders/${orderId}/transactions`;
       try{
         const payment =  await tiendanubeApiClient.request({
-          url:`${user_id}/orders/${orderId}/transactions`,
+          url:url,
           method:'POST',
           headers:{
               "Content-Type": "application/json",
@@ -283,7 +284,7 @@ class PaymentService{
         console.log(`processPayment: ${JSON.stringify(payment)}`)
         return payment;
       } catch (e) {
-        console.log(e)
+        console.log(`processPayment Error url:${url},accesstoken:${access_token} : ${JSON.stringify(e)}`)
       }
      
     }
@@ -381,9 +382,10 @@ class PaymentService{
     }
 
     private async updateOrderNote(user_id:string, orderId:string, access_token:any, query:any) {
+      const url = `${user_id}/orders/${orderId}`;
       try{
         const payment =  await tiendanubeApiClient.request({
-          url:`${user_id}/orders/${orderId}`,
+          url:url,
           method:'PUT',
           headers:{
               "Content-Type": "application/json",
@@ -394,7 +396,7 @@ class PaymentService{
         console.log(`updateOrderNote: ${JSON.stringify(payment)}`)
         return payment;
       } catch (e) {
-        console.log(e)
+        console.log(`updateOrderNote Error, url:${url},accesstoken:${access_token} : ${JSON.stringify(e)}`)
       }
     }
 
