@@ -234,7 +234,7 @@ class PaymentService{
         extras_epayco,
         extra1:payment_id,
         extra2:updated_at,
-        extra3:orderId
+        extra3:orderId.toString()
       };
       const epayco = new PaymentsAppsEpayco({publicKey: user?.publicKey,privateKey: user?.privateKey, lang: lang, test: test});
       const {token} = await epayco.sessionToken();
